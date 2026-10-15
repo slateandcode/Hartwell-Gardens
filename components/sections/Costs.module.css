@@ -250,7 +250,7 @@
   background: var(--moss);
   color: var(--stone);
   white-space: nowrap;
-  transform: translateX(-50%);
+  transform: translateX(calc(-50% + var(--nudge, 0px)));
   pointer-events: none;
 }
 
@@ -544,17 +544,14 @@
   .tapeWrap {
     --tu: calc((var(--vw) - 2 * var(--gutter)) / 2420);
     --ox: calc(var(--gutter) - 91 * var(--tu));
-    height: calc(320 * var(--tu) + 64px);
-  }
-
-  .bubble {
-    top: calc(254 * var(--tu) + 10px);
+    height: 196px;
+    margin-top: 40px;
   }
 
   /* Too tight for three band names: only the band you're in is named */
   .bracketLabel {
-    font-size: 14px;
-    top: calc(25 * var(--tu) - 14px);
+    top: 0;
+    font-size: 16px;
     transition:
       color 0.5s var(--ease-soft),
       opacity 0.5s var(--ease-soft);
@@ -564,8 +561,74 @@
     opacity: 0;
   }
 
+  .bracket {
+    top: 28px;
+    height: 9px;
+    border-width: 2px;
+  }
+
+  .band,
+  .tint {
+    top: 44px;
+    height: 32px;
+  }
+
+  .hook {
+    top: 38px;
+    height: 44px;
+    width: 6px;
+    left: calc(var(--ox) + 91 * var(--tu) - 6px);
+    border-radius: 2px;
+  }
+
+  .tick {
+    top: 44px;
+    width: 1px;
+    height: 7px;
+    margin-left: 0.5px;
+  }
+
+  .major {
+    width: 2px;
+    height: 14px;
+    margin-left: 0;
+  }
+
+  .value {
+    top: 82px;
+    font-size: 11px;
+  }
+
+  .pinLine {
+    top: 34px;
+    height: 54px;
+    width: 2px;
+    left: -1px;
+  }
+
+  .knob {
+    top: 60px;
+    width: 30px;
+    height: 30px;
+    border-width: 3px;
+  }
+
+  .bubble {
+    top: 104px;
+    gap: 8px;
+    padding: 8px 14px;
+  }
+
   .hint {
-    top: calc(264 * var(--tu) + 52px);
+    top: 150px;
+    left: var(--gutter);
+    font-size: 13px;
+  }
+
+  .note {
+    left: var(--gutter);
+    right: var(--gutter);
+    white-space: normal;
   }
 
   .price {

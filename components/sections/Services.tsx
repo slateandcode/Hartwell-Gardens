@@ -183,8 +183,8 @@ export default function Services() {
           <SectionTag num="02" label="Services" />
         </div>
         <h2 id="services-title" className={s.heading} data-heading data-reveal>
-          Every part of the garden,
-          <br />
+          Every part of the garden,{' '}
+          <br className="desk-br" />
           under one crew.
         </h2>
       </div>

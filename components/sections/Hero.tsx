@@ -402,7 +402,7 @@ export default function Hero() {
   return (
     <section id="top" ref={root} className={`${s.hero} on-dark`} aria-labelledby="hero-title">
       <div className={s.texture} data-texture data-intro-hide data-preload>
-        <Image src="/images/hedge-texture.webp" alt="" fill sizes="(max-width: 767px) 200vh, 100vw" preload />
+        <Image src="/images/hedge-texture.webp" alt="" fill sizes="(max-width: 767px) 150vh, 100vw" preload />
       </div>
 
       <div className={s.wordmark}>

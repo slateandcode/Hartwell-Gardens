@@ -121,7 +121,7 @@ export default function Nav() {
           <a href="#top" className={s.logo} onClick={(e) => go(e, '#top')}>
             Hartwell Gardens
           </a>
-          <nav aria-label="Main">
+          <nav aria-label="Main" className={s.primary}>
             <ul className={s.links}>
               {LINKS.map((l) => (
                 <li key={l.href}>

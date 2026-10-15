@@ -235,7 +235,7 @@
     grid-template-columns: 1fr auto;
   }
 
-  .links,
+  .primary,
   .phone {
     display: none;
   }

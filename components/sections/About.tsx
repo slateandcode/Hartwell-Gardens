@@ -34,7 +34,9 @@ const STATEMENT: Token[] = [
 
 const MOSS = '#2e3a28'
 const LOAM = '#7b5236'
-const PALE = 'rgba(46, 58, 40, 0.14)'
+// "Almost written": faint but legible, the phone starting state
+const ALMOST = 'rgba(46, 58, 40, 0.24)'
+const ALMOST_LOAM = 'rgba(123, 82, 54, 0.28)'
 
 export default function About() {
   const root = useRef<HTMLElement>(null)
@@ -66,9 +68,9 @@ export default function About() {
 
           mm = gsap.matchMedia()
           mm.add(
-            { pin: '(min-width: 768px) and (prefers-reduced-motion: no-preference)', mobile: '(max-width: 767px) and (prefers-reduced-motion: no-preference)', reduce: BREAKPOINTS.reduce },
+            { motion: BREAKPOINTS.motion, reduce: BREAKPOINTS.reduce },
             (ctx) => {
-              const { pin, reduce } = ctx.conditions as Record<string, boolean>
+              const { reduce } = ctx.conditions as Record<string, boolean>
 
               if (reduce) {
                 gsap.set([tag, learn], { visibility: 'visible' })
@@ -82,68 +84,49 @@ export default function About() {
                 .add(tagIn(tag))
                 .fromTo(learn, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: EASE.out }, 0.2)
 
-              // Words start pale and low; media start folded away.
               const wordsEls = seq.filter((n) => n.dataset.seq === 'word')
               const media = seq.filter((n) => n.dataset.seq !== 'word')
-              gsap.set(wordsEls, { color: PALE, y: '0.25em' })
-              gsap.set(media, { scale: 0, rotation: -10 })
+              const counter = { v: 0 }
+              const countTo = (t: number, target: gsap.core.Timeline) =>
+                target.to(
+                  counter,
+                  {
+                    v: 180,
+                    duration: 0.9,
+                    ease: 'power2.out',
+                    onUpdate: () => {
+                      count.textContent = `${Math.round(counter.v)}+`
+                    },
+                  },
+                  t,
+                )
               count.textContent = '0+'
               const div = dividerTl() // fromTo renders the folded start state immediately
 
-              const tl = gsap.timeline({
+              // Every screen size: no pin, nothing rises. The sentence is already there,
+              // faintly, like it's been pencilled in, and inks in word by word as you scroll past.
+              gsap.set(wordsEls, { color: (_i: number, n: HTMLElement) => (n.dataset.loam === 'true' ? ALMOST_LOAM : ALMOST) })
+              gsap.set(media, { opacity: 0.28 })
+              const ink = gsap.timeline({
                 defaults: { ease: 'none' },
-                scrollTrigger: pin
-                  ? {
-                      trigger: el,
-                      start: 'top top',
-                      end: '+=120%',
-                      scrub: 1,
-                      pin: true,
-                      anticipatePin: 1,
-                      onUpdate: (self) => {
-                        if (self.progress > 0.94 && !div.isActive() && div.progress() < 1) div.timeScale(1).play()
-                        else if (self.progress < 0.8 && div.progress() > 0) div.timeScale(1.6).reverse()
-                      },
-                    }
-                  : {
-                      trigger: el.querySelector('[data-statement]'),
-                      start: 'top 80%',
-                      end: 'bottom 45%',
-                      scrub: 1,
-                      onLeave: () => div.play(),
-                      onEnterBack: () => div.timeScale(1.6).reverse(),
-                    },
+                scrollTrigger: {
+                  trigger: el.querySelector('[data-statement]'),
+                  start: 'top 82%',
+                  end: 'bottom 42%',
+                  scrub: 0.8,
+                  onLeave: () => div.timeScale(1).play(),
+                  onEnterBack: () => div.timeScale(1.6).reverse(),
+                },
               })
-
-              // The reading front: each word goes pale -> loam -> moss (the last phrase stays loam).
-              const step = 0.16
-              const counter = { v: 0 }
               seq.forEach((node, i) => {
-                const t = i * step
+                const t = i * 0.12
                 if (node.dataset.seq === 'word') {
-                  tl.to(node, { color: LOAM, y: 0, duration: 0.34, ease: 'power2.out' }, t)
-                  if (node.dataset.loam !== 'true') tl.to(node, { color: MOSS, duration: 0.42, ease: 'power1.inOut' }, t + 0.34)
+                  ink.to(node, { color: node.dataset.loam === 'true' ? LOAM : MOSS, duration: 0.55 }, t)
                 } else {
-                  tl.to(node, { scale: 1, rotation: 0, duration: 0.55, ease: 'back.out(1.8)' }, t)
-                  if (node.dataset.seq === 'badge') {
-                    tl.to(
-                      counter,
-                      {
-                        v: 180,
-                        duration: 0.9,
-                        ease: 'power2.out',
-                        onUpdate: () => {
-                          count.textContent = `${Math.round(counter.v)}+`
-                        },
-                      },
-                      t + 0.1,
-                    )
-                  }
+                  ink.to(node, { opacity: 1, duration: 0.55 }, t)
+                  if (node.dataset.seq === 'badge') countTo(t, ink)
                 }
               })
-              // a short hold at the end so the finished sentence sits still before release
-              tl.to({}, { duration: 0.6 })
-
               return () => {
                 count.textContent = '180+'
               }

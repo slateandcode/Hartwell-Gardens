@@ -86,7 +86,19 @@ export default function Costs() {
 
       const pos = { v: useSite.getState().budget }
       const shown = { n: pos.v }
-      const paint = () => pin.style.setProperty('--pv', `${pos.v}`)
+      const bubble = el.querySelector<HTMLElement>('[data-bubble]')!
+      // Keep the bubble on screen at the ends of the tape (it sits centred under the pin otherwise).
+      const paint = () => {
+        pin.style.setProperty('--pv', `${pos.v}`)
+        // measured from the pin's own track, which (unlike the tape) never slides
+        const origin = pin.parentElement!.getBoundingClientRect().left
+        const view = document.documentElement.clientWidth
+        const edge = Math.min(24, view * 0.04)
+        const w = bubble.offsetWidth
+        const pinX = origin + (pos.v * PER_K * bandEl.offsetWidth) / 2560
+        const left = gsap.utils.clamp(edge, view - edge - w, pinX - w / 2)
+        bubble.style.setProperty('--nudge', `${(left - (pinX - w / 2)).toFixed(1)}px`)
+      }
       const follow = gsap.quickTo(pos, 'v', { duration: reduce ? 0 : 0.4, ease: 'power3.out', onUpdate: paint })
       let current = pos.v
 
@@ -166,6 +178,7 @@ export default function Costs() {
           setValue(map[e.key])
         }
       }
+      window.addEventListener('resize', paint)
       wrap.addEventListener('pointerdown', onDown)
       wrap.addEventListener('pointermove', onMove)
       wrap.addEventListener('pointerup', onUp)
@@ -234,6 +247,7 @@ export default function Costs() {
       return () => {
         cancelled = true
         mm?.revert()
+        window.removeEventListener('resize', paint)
         wrap.removeEventListener('pointerdown', onDown)
         wrap.removeEventListener('pointermove', onMove)
         wrap.removeEventListener('pointerup', onUp)
@@ -258,8 +272,8 @@ export default function Costs() {
           </p>
         </div>
         <h2 id="pricing-title" className={s.heading} data-heading data-reveal>
-          Honest prices,
-          <br />
+          Honest prices,{' '}
+          <br className="desk-br" />
           before anyone visits.
         </h2>
       </div>
@@ -329,7 +343,7 @@ export default function Costs() {
               aria-valuetext={money(budget)}
               aria-orientation="horizontal"
             />
-            <span className={s.bubble} aria-hidden="true">
+            <span className={s.bubble} data-bubble aria-hidden="true">
               <span className={s.bubbleLabel}>Your budget</span>
               <span className={s.bubbleValue} data-bubble-value>
                 £{budget}k
@@ -390,8 +404,8 @@ export default function Costs() {
 
       <div className={s.closing}>
         <p className={s.closingLine} data-closing data-reveal>
-          Every garden gets one fixed quote after the first visit.
-          <br />
+          Every garden gets one fixed quote after the first visit.{' '}
+          <br className="desk-br" />
           No extras later.
         </p>
         <div data-closing-cta>

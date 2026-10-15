@@ -46,11 +46,9 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       })
     })
 
-    let resizeRaf = 0
-    const onResize = () => {
-      cancelAnimationFrame(resizeRaf)
-      resizeRaf = requestAnimationFrame(setVw)
-    }
+    // Synchronous on purpose: gsap.matchMedia callbacks fire right after the
+    // resize event and measure layout, so the unit has to be current by then.
+    const onResize = () => setVw()
     window.addEventListener('resize', onResize)
 
     return () => {

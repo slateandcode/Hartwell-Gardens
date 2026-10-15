@@ -21,6 +21,9 @@ function show(el: Element | Element[]) {
 
 /** Masked line rise: each line slides up from behind its own clip. */
 export function revealLines(target: Element, { stagger = 0.1, duration = 1.15, revert = true }: SplitOpts = {}) {
+  if (target.querySelector('.desk-br') && window.matchMedia('(max-width: 767px)').matches) {
+    return riseWords(target, { stagger: Math.min(stagger, 0.06), duration: duration * 0.9, revert })
+  }
   const split = SplitText.create(target, {
     type: 'lines',
     mask: 'lines',

@@ -103,25 +103,67 @@ function offsetPath(path: SVGPathElement, offset: number, samples = 180) {
   return `M${out.join(' L')}`
 }
 
-/** Path for the reflowed layouts: in from the left edge, S-curves through every node, out through a side edge. */
-function flowPath(pts: { x: number; y: number }[], width: number, mobile: boolean) {
-  const first = pts[0]
-  const last = pts[pts.length - 1]
-  const lead = mobile ? 150 : 380
-  const sx = -80
-  const sy = first.y - lead
-  let d = `M${sx} ${sy} C${first.x * 0.55} ${sy} ${first.x} ${first.y - lead * 0.55} ${first.x} ${first.y}`
-  for (let i = 0; i < pts.length - 1; i++) {
-    const a = pts[i]
-    const b = pts[i + 1]
-    const k = (b.y - a.y) * 0.5
-    const wiggle = mobile ? (i % 2 ? -1 : 1) * 90 : 0
-    d += ` C${a.x + wiggle} ${a.y + k} ${b.x - wiggle} ${b.y - k} ${b.x} ${b.y}`
-  }
-  const ex = mobile ? -80 : width + 80
-  const ey = last.y + (mobile ? 300 : 460)
-  d += ` C${last.x} ${last.y + (ey - last.y) * 0.7} ${mobile ? last.x * 0.6 : last.x + (ex - last.x) * 0.3} ${ey} ${ex} ${ey}`
-  return d
+type StepGeo = { x: number; y: number; bottom: number }
+
+/**
+ * Phone path, built the way the desktop path is: every node and every joint
+ * has a vertical tangent, the crossings are wide S-bends, and the loop between
+ * 01 and 02 is the same construction as the Figma loop. Because each piece
+ * leaves a joint in exactly the direction the last one arrived, the line
+ * never kinks. Steps alternate sides, so the line runs down beside each
+ * step's text and only crosses the screen in the gaps.
+ * Returns the path plus where it starts and ends vertically (for the trigger).
+ */
+function phonePath(g: StepGeo[], width: number, height: number) {
+  const W = width
+  const k = 0.5523 // circle-from-cubics constant
+  const n = (v: number) => v.toFixed(1)
+  const C = (x1: number, y1: number, x2: number, y2: number, x: number, y: number) =>
+    ` C${n(x1)} ${n(y1)} ${n(x2)} ${n(y2)} ${n(x)} ${n(y)}`
+
+  const first = g[0]
+  const sy = first.y - 160
+  // in from the right edge, a wide sweep under the heading, turning down into 01
+  let d = `M${n(W + 80)} ${n(sy)}` + C(W * 0.45, sy, first.x, first.y - 125, first.x, first.y)
+  let ey = 0
+
+  g.forEach((step, i) => {
+    // down beside the text, drifting a touch toward the middle (vertical at both ends)
+    const inward = step.x < W / 2 ? 1 : -1
+    const lx = step.x + inward * Math.min(16, W * 0.04)
+    const ly = step.bottom + 20
+    const h = ly - step.y
+    d += C(step.x, step.y + h * 0.5, lx, ly - h * 0.5, lx, ly)
+
+    const next = g[i + 1]
+    if (!next) {
+      // round the bottom and out through the left edge, kept well clear of the
+      // section's bottom edge so the stroke leaves the screen at full thickness
+      ey = Math.min(ly + 150, height - 80)
+      d += C(lx, ly + (ey - ly) * 0.8, W * 0.4, ey, -80, ey)
+      return
+    }
+    const gap = next.y - ly
+    if (i === 0) {
+      // the loop: in to its base, round anticlockwise, back across its own tail, on to 02
+      const r = Math.max(32, Math.min(W * 0.16, gap * 0.21))
+      const cx = W * 0.52
+      const cy = ly + gap * 0.38
+      d += C(lx, ly + (cy + r - ly) * 0.62, cx - r * 1.05, cy + r, cx, cy + r)
+      d += C(cx + k * r, cy + r, cx + r, cy + k * r, cx + r, cy)
+      d += C(cx + r, cy - k * r, cx + k * r, cy - r, cx, cy - r)
+      d += C(cx - k * r, cy - r, cx - r, cy - k * r, cx - r, cy)
+      const ox = cx + 0.75 * r
+      const oy = cy + 1.7 * r
+      const out = 0.55 * r // tangent length leaving the crossing, kept horizontal both sides
+      d += C(cx - r, cy + 1.1 * r, ox - out, oy, ox, oy)
+      d += C(ox + out, oy, next.x, next.y - (next.y - oy) * 0.62, next.x, next.y)
+    } else {
+      // a wide S across to the other side, vertical at both ends
+      d += C(lx, ly + gap * 0.56, next.x, next.y - gap * 0.56, next.x, next.y)
+    }
+  })
+  return { d, startY: sy, endY: ey }
 }
 
 export default function Process() {
@@ -206,7 +248,11 @@ export default function Process() {
               let tl: gsap.core.Timeline | null = null
               const splits: SplitText[] = []
 
+              // phone only: where the path starts and ends, so the drawing head stays on screen
+              let span: { start: number; end: number } | null = null
+
               const build = () => {
+                span = null
                 const u = probe.offsetWidth / 1000
                 let width = 58
                 if (desktop) {
@@ -216,13 +262,15 @@ export default function Process() {
                 } else {
                   const box = el.getBoundingClientRect()
                   svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`)
-                  const pts = steps.map((st) => {
+                  const geo = steps.map((st) => {
                     const r = st.querySelector('[data-node]')!.getBoundingClientRect()
-                    return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top }
+                    const b = st.getBoundingClientRect()
+                    return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top, bottom: b.bottom - box.top }
                   })
-                  const d = flowPath(pts, box.width, mobile)
-                  toCome.setAttribute('d', d)
-                  done.setAttribute('d', d)
+                  const path = phonePath(geo, box.width, box.height)
+                  toCome.setAttribute('d', path.d)
+                  done.setAttribute('d', path.d)
+                  span = { start: path.startY, end: path.endY }
                   width = 34 * u
                 }
                 toCome.style.strokeWidth = `${width}`
@@ -253,6 +301,18 @@ export default function Process() {
               }
 
               const timeline = () => {
+                // Split first: the word masks nudge the titles a few px, so measure after.
+                const parts = reduce
+                  ? []
+                  : steps.map((st) => {
+                      const title = st.querySelector<HTMLElement>('[data-title]')!
+                      const body = st.querySelector<HTMLElement>('[data-body]')!
+                      const titleSplit = SplitText.create(title, { type: 'words', mask: 'words', wordsClass: 'split-word', aria: 'none' })
+                      const bodySplit = SplitText.create(body, { type: 'lines', linesClass: 'split-line', aria: 'none' })
+                      splits.push(titleSplit, bodySplit)
+                      gsap.set([title, body], { visibility: 'visible' })
+                      return { titleSplit, bodySplit }
+                    })
                 build()
                 if (reduce) {
                   // final state: path drawn, every step awake
@@ -270,7 +330,10 @@ export default function Process() {
                 const D = 10
                 tl = gsap.timeline({
                   defaults: { ease: 'none' },
-                  scrollTrigger: { trigger: el, start: 'top 70%', end: 'bottom 80%', scrub: 1, invalidateOnRefresh: false },
+                  scrollTrigger: span
+                    ? // the head sits about two thirds down the screen the whole way
+                      { trigger: el, start: `top+=${Math.round(span.start)} 66%`, end: `top+=${Math.round(span.end)} 66%`, scrub: 1 }
+                    : { trigger: el, start: 'top 70%', end: 'bottom 80%', scrub: 1 },
                 })
                 tl.fromTo(done, { drawSVG: '0% 0%' }, { drawSVG: '0% 100%', duration: D }, 0)
                 tl.fromTo(rider, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15 }, 0)
@@ -284,13 +347,8 @@ export default function Process() {
                   const t = fr[i] * D
                   const node = st.querySelector('[data-node]')!
                   const chip = st.querySelector('[data-chip]')!
-                  const title = st.querySelector<HTMLElement>('[data-title]')!
                   const icon = st.querySelector('[data-icon]')
-                  const body = st.querySelector<HTMLElement>('[data-body]')!
-                  const titleSplit = SplitText.create(title, { type: 'words', mask: 'words', wordsClass: 'split-word', aria: 'none' })
-                  const bodySplit = SplitText.create(body, { type: 'lines', linesClass: 'split-line', aria: 'none' })
-                  splits.push(titleSplit, bodySplit)
-                  gsap.set([title, body], { visibility: 'visible' })
+                  const { titleSplit, bodySplit } = parts[i]
 
                   tl!
                     .to(node, { scale: 0.7, duration: 0.14, ease: 'power2.in' }, Math.max(0, t - 0.14))
@@ -315,24 +373,30 @@ export default function Process() {
 
               timeline()
 
-              // The reflowed path depends on where the nodes land; rebuild it on resize.
+              // The phone path is drawn through wherever the nodes land, so whenever
+              // the section changes size (rotation, the browser bar, a resized pane)
+              // put everything back to its start state and rebuild from fresh measurements.
               let resizeTimer = 0
-              const onResize = () => {
-                if (desktop) return
-                clearTimeout(resizeTimer)
-                resizeTimer = window.setTimeout(() => {
-                  const progress = tl?.scrollTrigger?.progress ?? 0
-                  tl?.scrollTrigger?.kill()
-                  tl?.kill()
-                  splits.splice(0).forEach((sp) => sp.revert())
-                  timeline()
-                  ScrollTrigger.refresh()
-                  if (tl?.scrollTrigger) tl.progress(progress)
-                }, 250)
+              let last = { w: el.offsetWidth, h: el.offsetHeight }
+              const rebuild = () => {
+                tl?.revert()
+                tl = null
+                splits.splice(0).forEach((sp) => sp.revert())
+                timeline()
+                ScrollTrigger.refresh()
               }
-              window.addEventListener('resize', onResize)
+              const ro = new ResizeObserver(() => {
+                if (desktop) return
+                const w = el.offsetWidth
+                const h = el.offsetHeight
+                if (Math.abs(w - last.w) < 1 && Math.abs(h - last.h) < 2) return
+                last = { w, h }
+                clearTimeout(resizeTimer)
+                resizeTimer = window.setTimeout(rebuild, 200)
+              })
+              ro.observe(el)
               return () => {
-                window.removeEventListener('resize', onResize)
+                ro.disconnect()
                 clearTimeout(resizeTimer)
               }
             },

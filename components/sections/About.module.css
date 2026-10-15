@@ -1,7 +1,7 @@
 /* About (Figma 33:2). The statement is set in Neue Montreal per the brief. */
 .about {
   position: relative;
-  min-height: max(100svh, calc(1378 * var(--u)));
+  min-height: calc(1378 * var(--u));
   display: flex;
   flex-direction: column;
   background: var(--stone);

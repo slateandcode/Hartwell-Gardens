@@ -239,14 +239,14 @@
   }
 }
 
-/* ---------- Mobile: a wiggle down the left, steps on the right ---------- */
+/* ---------- Mobile: steps alternate sides, the path winds between them ---------- */
 
 @media (max-width: 767px) {
   .process {
     --pu: var(--u);
     --node: calc(96 * var(--u));
     height: auto;
-    padding: calc(120 * var(--u)) 0 calc(300 * var(--u));
+    padding: calc(120 * var(--u)) 0 calc(440 * var(--u));
   }
 
   .head {
@@ -266,25 +266,43 @@
     inset: auto;
     display: flex;
     flex-direction: column;
-    gap: calc(130 * var(--u));
-    margin-top: calc(300 * var(--u));
+    gap: calc(400 * var(--u));
+    margin-top: calc(400 * var(--u));
     padding: 0 var(--gutter);
+  }
+
+  /* room for the loop between 01 and 02 */
+  .step:nth-child(2) {
+    margin-top: calc(270 * var(--u));
   }
 
   .step {
     display: grid;
     align-items: start;
+    column-gap: calc(40 * var(--u));
+  }
+
+  .left {
     grid-template-columns: var(--node) 1fr;
-    column-gap: calc(44 * var(--u));
-    padding-left: calc(30 * var(--u));
+  }
+
+  .right {
+    grid-template-columns: 1fr var(--node);
   }
 
   .node {
     position: relative;
     left: auto;
     top: auto;
-    grid-column: 1;
     grid-row: 1;
+  }
+
+  .left .node {
+    grid-column: 1;
+  }
+
+  .right .node {
+    grid-column: 2;
   }
 
   .text,
@@ -295,10 +313,17 @@
     left: auto;
     right: auto;
     width: auto;
-    grid-column: 2;
     grid-row: 1;
     align-items: flex-start;
     text-align: left;
+  }
+
+  .left .text {
+    grid-column: 2;
+  }
+
+  .right .text {
+    grid-column: 1;
   }
 
   .title {
