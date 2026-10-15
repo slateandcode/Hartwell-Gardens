@@ -1,0 +1,35 @@
+/* Text roll: two stacked copies in a clipped box; hover lifts both one line. */
+.roll {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  vertical-align: top;
+  line-height: 1.25;
+  height: 1.25em;
+  transition: color 0.45s var(--ease-soft);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.45s var(--ease-soft);
+}
+
+.stack > span {
+  display: block;
+  white-space: nowrap;
+}
+
+a:hover > .roll,
+a:focus-visible > .roll,
+.roll:is(a):hover,
+.roll:is(a):focus-visible {
+  color: var(--sage);
+}
+
+a:hover > .roll .stack,
+a:focus-visible > .roll .stack,
+.roll:is(a):hover .stack,
+.roll:is(a):focus-visible .stack {
+  transform: translateY(-50%);
+}

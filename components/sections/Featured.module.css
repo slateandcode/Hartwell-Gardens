@@ -1,0 +1,305 @@
+/* Featured garden (Figma 25:2) */
+.featured {
+  display: grid;
+  grid-template-columns: calc(900 * var(--u)) 1fr;
+  column-gap: calc(180 * var(--u));
+  padding: calc(150 * var(--u)) var(--gutter) calc(152 * var(--u));
+  background: var(--moss);
+  color: var(--stone);
+}
+
+.copy {
+  padding-top: calc(64 * var(--u));
+}
+
+.headline {
+  font-family: var(--font-serif);
+  font-size: calc(112 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+}
+
+.brief {
+  margin-top: calc(56 * var(--u));
+  font-size: max(15px, calc(30 * var(--u)));
+  line-height: 1.5;
+  color: rgb(var(--stone-rgb) / 0.8);
+}
+
+.facts {
+  display: flex;
+  margin-top: calc(64 * var(--u));
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+  padding: 0 calc(40 * var(--u));
+  border-left: 1.5px solid rgb(var(--stone-rgb) / 0.2);
+}
+
+.fact:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.factValue {
+  order: -1;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: calc(76 * var(--u));
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.factLabel {
+  font-size: max(12px, calc(22 * var(--u)));
+  line-height: 1.25;
+  color: rgb(var(--stone-rgb) / 0.65);
+}
+
+.quote {
+  margin-top: calc(72 * var(--u));
+}
+
+.quoteText {
+  font-family: var(--font-serif);
+  font-size: calc(48 * var(--u));
+  line-height: 1.2;
+  max-width: calc(880 * var(--u));
+}
+
+.cite {
+  display: block;
+  margin-top: calc(19 * var(--u));
+  font-style: normal;
+  font-size: max(12px, calc(22 * var(--u)));
+  color: rgb(var(--stone-rgb) / 0.6);
+}
+
+.cta {
+  margin-top: calc(64 * var(--u));
+}
+
+/* ---------- Before / after ---------- */
+
+.visual {
+  min-width: 0;
+}
+
+.slider {
+  position: relative;
+  aspect-ratio: 1300 / 880;
+  border-radius: calc(24 * var(--u));
+  overflow: hidden;
+  background: var(--sage);
+  touch-action: pan-y;
+  cursor: ew-resize;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.media,
+.before {
+  position: absolute;
+  inset: 0;
+}
+
+.media img {
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.before {
+  clip-path: inset(0 50% 0 0);
+}
+
+.rail {
+  position: absolute;
+  inset: 0;
+  transform: translateX(50%);
+  pointer-events: none;
+}
+
+.line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(-1.5 * var(--u));
+  width: max(2px, calc(3 * var(--u)));
+  background: var(--stone);
+}
+
+.handle {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: calc(104 * var(--u));
+  height: calc(104 * var(--u));
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 50%;
+  background: var(--stone);
+  color: var(--moss);
+  font-size: max(14px, calc(30 * var(--u)));
+  font-weight: 500;
+  white-space: pre;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  cursor: grab;
+  box-shadow: 0 8px 30px rgb(20 26 17 / 0.25);
+  transition:
+    background-color 0.45s var(--ease-soft),
+    color 0.45s var(--ease-soft),
+    scale 0.45s var(--ease-soft);
+}
+
+.handle:hover,
+.handle:focus-visible,
+.dragging .handle {
+  background: var(--loam);
+  color: var(--stone);
+  scale: 1.06;
+}
+
+.dragging,
+.dragging .handle {
+  cursor: grabbing;
+}
+
+.label {
+  position: absolute;
+  top: calc(28 * var(--u));
+  padding: calc(12 * var(--u)) calc(22 * var(--u));
+  border-radius: 100px;
+  background: var(--stone);
+  color: var(--moss);
+  font-size: max(10px, calc(20 * var(--u)));
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+.labelBefore {
+  left: calc(28 * var(--u));
+}
+
+.labelAfter {
+  right: calc(28 * var(--u));
+}
+
+.weeks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(24 * var(--u));
+  margin-top: calc(24 * var(--u));
+}
+
+.week {
+  position: relative;
+  aspect-ratio: 417.333 / 300;
+  border-radius: calc(18 * var(--u));
+  overflow: hidden;
+  background: var(--sage);
+}
+
+.week img {
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-soft);
+}
+
+.week:hover img {
+  transform: scale(1.06);
+}
+
+.weekCap {
+  position: absolute;
+  left: calc(18 * var(--u));
+  bottom: calc(18 * var(--u));
+  display: flex;
+  gap: calc(10 * var(--u));
+  padding: calc(9 * var(--u)) calc(16 * var(--u));
+  border-radius: 100px;
+  background: var(--stone);
+  color: var(--moss);
+  font-size: max(11px, calc(19 * var(--u)));
+  line-height: 1.25;
+  white-space: pre;
+  transition:
+    background-color 0.5s var(--ease-soft),
+    color 0.5s var(--ease-soft);
+}
+
+.weekCap b {
+  font-weight: 500;
+}
+
+.weekCap span {
+  opacity: 0.75;
+}
+
+.week:hover .weekCap {
+  background: var(--loam);
+  color: var(--stone);
+}
+
+@media (max-width: 1279px) {
+  .featured {
+    grid-template-columns: 1fr;
+    row-gap: calc(90 * var(--u));
+    padding-top: calc(130 * var(--u));
+  }
+
+  .copy {
+    padding-top: 0;
+  }
+
+  .brief {
+    max-width: 640px;
+  }
+}
+
+@media (max-width: 767px) {
+  .headline {
+    font-size: calc(90 * var(--u));
+    white-space: normal;
+  }
+
+  .facts {
+    flex-wrap: wrap;
+    row-gap: 20px;
+  }
+
+  .fact {
+    padding: 0 calc(30 * var(--u));
+  }
+
+  .factValue {
+    font-size: calc(70 * var(--u));
+  }
+
+  .quoteText {
+    font-size: calc(54 * var(--u));
+  }
+
+  .weeks {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin-right: calc(var(--gutter) * -1);
+    padding-right: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .week {
+    flex: none;
+    width: 74%;
+    scroll-snap-align: start;
+  }
+}

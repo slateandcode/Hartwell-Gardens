@@ -1,0 +1,503 @@
+/*
+  Hero (Figma 5:2, 2562 x 2317). Positions are Figma px in `--hu`, the hero's
+  own unit, so the card arc keeps its proportions on tablet too.
+*/
+.hero {
+  --hu: var(--u);
+  position: relative;
+  height: calc(2317 * var(--hu));
+  background: var(--moss);
+  color: var(--stone);
+  overflow: clip;
+}
+
+.texture {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(2580 * var(--hu));
+  height: calc(2580 * var(--hu));
+  margin: calc(-1290 * var(--hu)) 0 0 calc(-1290 * var(--hu));
+  pointer-events: none;
+}
+
+.texture img {
+  object-fit: cover;
+}
+
+/* ---------- Wordmark ---------- */
+
+.wordmark {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(265.27 * var(--hu));
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.wmScroll,
+.wmMouse,
+.wmIntro {
+  position: relative;
+}
+
+.mark {
+  font-family: var(--font-serif);
+  font-size: calc(174.708 * var(--hu));
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  color: var(--sage);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.markLine {
+  display: block;
+}
+
+.script {
+  position: absolute;
+  left: calc(50% + 12 * var(--hu));
+  top: calc(299.73 * var(--hu));
+  font-size: calc(139.623 * var(--hu));
+  color: var(--stone);
+  transform: translateX(-50%);
+  overflow: visible;
+}
+
+.scriptWrap {
+  position: absolute;
+  inset: 0;
+}
+
+
+/* ---------- Cards ---------- */
+
+.cards {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.slot {
+  position: absolute;
+  left: calc(var(--cx) * var(--hu));
+  top: calc(var(--cy) * var(--hu));
+  width: calc(var(--w) * var(--hu));
+  height: calc(var(--h) * var(--hu));
+  margin-left: calc(var(--w) * var(--hu) / -2);
+  margin-top: calc(var(--h) * var(--hu) / -2);
+}
+
+.slot:has(.card:hover),
+.slot:has(.card:focus-visible) {
+  z-index: 5;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+}
+
+.lift {
+  transition: transform 0.5s var(--ease-soft);
+}
+
+.deal {
+  transform: rotate(var(--rot));
+}
+
+.tilt {
+  transition: transform 0.5s var(--ease-soft);
+}
+
+.slot:has(.card:hover) .lift,
+.slot:has(.card:focus-visible) .lift {
+  transform: translateY(-14px) scale(1.04);
+}
+
+.slot:has(.card:hover) .tilt,
+.slot:has(.card:focus-visible) .tilt {
+  transform: rotate(calc(var(--rot) * -1));
+}
+
+.card {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: calc(18 * var(--hu));
+  overflow: hidden;
+  background: var(--sage);
+  pointer-events: auto;
+  box-shadow: 0 calc(30 * var(--hu)) calc(60 * var(--hu)) rgb(20 26 17 / 0.28);
+  transform: translateZ(0);
+}
+
+.card img {
+  object-fit: cover;
+  transition: transform 0.5s var(--ease-soft);
+}
+
+.card:hover img,
+.card:focus-visible img {
+  transform: scale(1.06);
+}
+
+.card:focus-visible {
+  outline-color: var(--sage);
+}
+
+.caption {
+  position: absolute;
+  left: calc(var(--capx) * var(--hu));
+  top: calc(var(--capy) * var(--hu));
+  padding: calc(9 * var(--hu)) calc(16 * var(--hu));
+  border-radius: 100px;
+  background: var(--stone);
+  color: var(--moss);
+  font-size: calc(19 * var(--hu));
+  font-weight: 500;
+  line-height: 1.25;
+  white-space: pre;
+  transition:
+    background-color 0.5s var(--ease-soft),
+    color 0.5s var(--ease-soft);
+}
+
+.card:hover .caption,
+.card:focus-visible .caption {
+  background: var(--loam);
+  color: var(--stone);
+}
+
+/* ---------- Copy ---------- */
+
+.headline {
+  position: absolute;
+  left: calc(73 * var(--hu));
+  top: calc(1506 * var(--hu));
+  z-index: 3;
+  font-family: var(--font-serif);
+  font-size: calc(121.191 * var(--hu));
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  color: var(--stone);
+  white-space: nowrap;
+}
+
+.lede {
+  position: absolute;
+  left: 50%;
+  top: calc(1999 * var(--hu));
+  z-index: 3;
+  width: max(calc(552 * var(--hu)), 300px);
+  transform: translateX(-50%);
+  font-size: max(15px, calc(28 * var(--hu)));
+  line-height: 1.45;
+  text-align: center;
+  color: rgb(var(--stone-rgb) / 0.8);
+  text-wrap: balance;
+}
+
+.ctaWrap {
+  position: absolute;
+  left: 50%;
+  top: calc(2166 * var(--hu));
+  z-index: 3;
+  transform: translateX(-50%);
+}
+
+.cta {
+  --badge: calc(79 * var(--hu));
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(14 * var(--hu));
+  height: max(44px, calc(79 * var(--hu)));
+  padding: 0 calc(36 * var(--hu)) 0 calc(40 * var(--hu));
+  border-radius: 100px;
+  overflow: hidden;
+  background: var(--stone);
+  color: var(--moss);
+  font-size: max(15px, calc(25 * var(--hu)));
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.5s var(--ease-soft);
+}
+
+.ctaFill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--moss);
+  clip-path: circle(0% at calc(100% - 47 * var(--hu)) 50%);
+  transition: clip-path 0.55s var(--ease-soft);
+}
+
+.cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1.5px rgb(var(--stone-rgb) / 0.55);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-soft);
+}
+
+.ctaArrow {
+  display: inline-block;
+  transition: transform 0.5s var(--ease-soft);
+}
+
+.cta:hover,
+.cta:focus-visible {
+  color: var(--stone);
+}
+
+.cta:hover .ctaFill,
+.cta:focus-visible .ctaFill {
+  clip-path: circle(150% at calc(100% - 47 * var(--hu)) 50%);
+}
+
+.cta:hover::after,
+.cta:focus-visible::after {
+  opacity: 1;
+}
+
+.cta:hover .ctaArrow,
+.cta:focus-visible .ctaArrow {
+  transform: rotate(-45deg);
+}
+
+/* ---------- Intro overlay ---------- */
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  pointer-events: auto;
+  cursor: default;
+}
+
+:global(.intro-pending) .intro {
+  display: block;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: 50% 50%;
+  visibility: hidden;
+}
+
+.frame rect {
+  fill: none;
+  stroke: rgb(var(--stone-rgb) / 0.35);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.side {
+  position: absolute;
+  top: 50%;
+  margin-top: -0.6em;
+  font-family: var(--font-serif);
+  font-size: clamp(13px, calc(24 * var(--u)), 18px);
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.45em;
+  color: var(--stone);
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.sideLeft {
+  left: 88px;
+}
+
+.sideRight {
+  right: calc(88px - 0.45em);
+}
+
+.taglineMask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 72px;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  padding-bottom: 0.2em;
+}
+
+.tagline {
+  display: block;
+  font-size: clamp(10px, calc(18 * var(--u)), 13px);
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgb(var(--stone-rgb) / 0.75);
+  opacity: 0;
+}
+
+/* ---------- Tablet: same arc, scaled to the viewport ---------- */
+
+@media (max-width: 1279px) {
+  .hero {
+    --hu: calc(var(--vw) / 2562);
+  }
+
+  .headline {
+    font-size: calc(128 * var(--hu));
+  }
+
+  .card {
+    box-shadow: 0 10px 24px rgb(20 26 17 / 0.28);
+  }
+}
+
+/* ---------- Mobile: wordmark, a swipeable row of cards, copy ---------- */
+
+@media (max-width: 767px) {
+  .hero {
+    --hu: var(--u);
+    height: auto;
+    padding: calc(250 * var(--u)) 0 calc(120 * var(--u));
+  }
+
+  .texture {
+    width: max(100%, 200vh);
+    height: max(100%, 200vh);
+    margin: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  .wordmark {
+    position: relative;
+    top: auto;
+    height: calc(440 * var(--u));
+  }
+
+  .mark {
+    font-size: calc(158 * var(--u));
+  }
+
+  .script {
+    top: calc(276 * var(--u));
+    font-size: calc(128 * var(--u));
+  }
+
+  .cards {
+    position: relative;
+    inset: auto;
+    display: flex;
+    gap: calc(28 * var(--u));
+    margin-top: calc(70 * var(--u));
+    padding: calc(40 * var(--u)) var(--gutter) calc(70 * var(--u));
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 var(--gutter);
+    scrollbar-width: none;
+    pointer-events: auto;
+  }
+
+  .cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .slot {
+    position: relative;
+    left: auto;
+    top: auto;
+    flex: none;
+    width: calc(600 * var(--u));
+    height: calc(420 * var(--u));
+    margin: 0;
+    scroll-snap-align: start;
+  }
+
+  .deal {
+    transform: rotate(var(--rot-m));
+  }
+
+  .slot:has(.card:hover) .tilt,
+  .slot:has(.card:focus-visible) .tilt {
+    transform: rotate(calc(var(--rot-m) * -1));
+  }
+
+  .caption {
+    left: calc(24 * var(--u));
+    top: auto;
+    bottom: calc(24 * var(--u));
+    font-size: calc(24 * var(--u));
+    padding: calc(12 * var(--u)) calc(20 * var(--u));
+  }
+
+  .headline,
+  .lede,
+  .ctaWrap {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+  }
+
+  .headline {
+    margin: calc(40 * var(--u)) var(--gutter) 0;
+    font-size: calc(92 * var(--u));
+    white-space: normal;
+    text-wrap: balance;
+  }
+
+  .headline br {
+    display: none;
+  }
+
+  .lede {
+    width: auto;
+    margin: calc(48 * var(--u)) var(--gutter) 0;
+    font-size: 16px;
+    text-align: left;
+  }
+
+  .ctaWrap {
+    margin: calc(56 * var(--u)) var(--gutter) 0;
+  }
+
+  .cta {
+    height: 52px;
+    padding: 0 22px 0 24px;
+    font-size: 16px;
+  }
+
+  .sideLeft,
+  .sideRight {
+    top: 50%;
+    writing-mode: vertical-rl;
+    margin-top: 0;
+    font-size: 10px;
+  }
+
+  .sideLeft {
+    left: 26px;
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .sideRight {
+    right: 26px;
+    transform: translateY(-50%);
+  }
+
+  .taglineMask {
+    bottom: 44px;
+  }
+}

@@ -1,0 +1,578 @@
+/* What it costs (Figma 38:2) */
+.costs {
+  position: relative;
+  padding: calc(116 * var(--u)) 0 calc(170 * var(--u));
+  background: var(--stone);
+  color: var(--moss);
+  overflow: clip;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: calc(1100 * var(--u)) 1fr;
+  column-gap: calc(40 * var(--u));
+  padding: 0 var(--gutter);
+}
+
+.headLeft {
+  padding-top: calc(14 * var(--u));
+}
+
+.intro {
+  max-width: calc(560 * var(--u));
+  margin-top: calc(36 * var(--u));
+  font-size: max(14px, calc(26 * var(--u)));
+  line-height: 1.5;
+  color: rgb(var(--moss-rgb) / 0.65);
+}
+
+.heading {
+  font-family: var(--font-serif);
+  font-size: calc(108 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+/* ---------- The tape (Figma coordinates in --tu) ---------- */
+
+.tapeWrap {
+  --tu: var(--u);
+  --ox: 0px;
+  position: relative;
+  height: calc(320 * var(--tu));
+  margin-top: calc(90 * var(--u));
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.abs {
+  position: absolute;
+}
+
+.roll {
+  position: absolute;
+  inset: 0;
+}
+
+.band {
+  left: calc(var(--ox) + 91 * var(--tu));
+  top: calc(140 * var(--tu));
+  width: calc(2560 * var(--tu));
+  height: calc(84 * var(--tu));
+  background: var(--sage);
+}
+
+.tint {
+  left: calc(var(--ox) + 91 * var(--tu));
+  top: calc(140 * var(--tu));
+  width: calc(2380 * var(--tu));
+  height: calc(84 * var(--tu));
+  background: rgb(var(--loam-rgb) / 0.18);
+  transform-origin: 0 50%;
+}
+
+.hook {
+  left: calc(var(--ox) + 75 * var(--tu));
+  top: calc(126 * var(--tu));
+  width: calc(16 * var(--tu));
+  height: calc(112 * var(--tu));
+  border-radius: calc(3 * var(--tu));
+  background: var(--moss);
+}
+
+.tick {
+  left: calc(var(--ox) + (91 + var(--k) * 39.667) * var(--tu) - 1px);
+  top: calc(140 * var(--tu));
+  width: 2px;
+  height: calc(22 * var(--tu));
+  background: rgb(var(--moss-rgb) / 0.38);
+  transform-origin: 50% 0;
+}
+
+.major {
+  width: 3px;
+  margin-left: -0.5px;
+  height: calc(40 * var(--tu));
+  background: rgb(var(--moss-rgb) / 0.6);
+}
+
+.value {
+  left: calc(var(--ox) + (91 + var(--k) * 39.667) * var(--tu));
+  top: calc(188 * var(--tu));
+  transform: translateX(-50%);
+  font-size: max(11px, calc(22 * var(--tu)));
+  font-weight: 500;
+  line-height: 1.2;
+  color: rgb(var(--moss-rgb) / 0.8);
+  white-space: nowrap;
+}
+
+.bracket {
+  left: calc(var(--ox) + var(--x0) * var(--tu));
+  top: calc(94 * var(--tu));
+  width: calc((var(--x1) - var(--x0)) * var(--tu));
+  height: calc(26 * var(--tu));
+  border: max(2px, calc(3 * var(--tu))) solid rgb(var(--moss-rgb) / 0.35);
+  border-bottom: 0;
+  transition: border-color 0.5s var(--ease-soft);
+}
+
+.bracketLabel {
+  left: calc(var(--ox) + (var(--x0) + var(--x1)) / 2 * var(--tu));
+  top: calc(25 * var(--tu));
+  transform: translateX(-50%);
+  font-family: var(--font-serif);
+  font-size: max(13px, calc(42 * var(--tu)));
+  line-height: 1.2;
+  white-space: nowrap;
+  color: rgb(var(--moss-rgb) / 0.55);
+  transition: color 0.5s var(--ease-soft);
+}
+
+.bracketLabel > span {
+  display: block;
+}
+
+[data-band-on='true'].bracket {
+  border-color: var(--loam);
+}
+
+[data-band-on='true'].bracketLabel {
+  color: var(--loam);
+}
+
+.hint {
+  left: calc(var(--ox) + 91 * var(--tu));
+  top: calc(264 * var(--tu));
+  font-size: max(12px, calc(24 * var(--tu)));
+  line-height: 1.3;
+  color: rgb(var(--moss-rgb) / 0.55);
+  white-space: pre;
+  transition:
+    opacity 0.5s var(--ease-soft),
+    transform 0.5s var(--ease-soft);
+}
+
+.note {
+  composes: hint;
+  /* clear of the bubble, which sits under the pin at £9k or less */
+  left: calc(var(--ox) + (91 + 14 * 39.667) * var(--tu));
+  color: var(--loam);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+.low .hint:not(.note) {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.low .note {
+  opacity: 1;
+  transform: none;
+}
+
+/* Pin: one group moved along x by --pv (budget in £k) */
+.pinMove {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  transform: translateX(calc(var(--pv, 35) * 39.667 * var(--tu)));
+}
+
+.pin {
+  left: calc(var(--ox) + 91 * var(--tu));
+  top: 0;
+  width: 0;
+  height: 100%;
+  z-index: 2;
+}
+
+.pinLine {
+  position: absolute;
+  left: calc(-2 * var(--tu));
+  top: calc(120 * var(--tu));
+  width: max(2px, calc(4 * var(--tu)));
+  height: calc(124 * var(--tu));
+  background: var(--moss);
+}
+
+.knob {
+  position: absolute;
+  left: 0;
+  top: calc(182 * var(--tu));
+  width: calc(70 * var(--tu));
+  height: calc(70 * var(--tu));
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 50%;
+  background: var(--moss);
+  border: max(3px, calc(6 * var(--tu))) solid var(--stone);
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  transition:
+    background-color 0.45s var(--ease-soft),
+    scale 0.45s var(--ease-soft);
+}
+
+/* Bigger hit area than the knob itself (44px minimum) */
+.knob::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+}
+
+.knob:hover,
+.knob:focus-visible,
+.dragging .knob {
+  background: var(--loam);
+  scale: 1.08;
+}
+
+.dragging,
+.dragging .knob {
+  cursor: grabbing;
+}
+
+.bubble {
+  position: absolute;
+  left: 0;
+  top: calc(254 * var(--tu));
+  display: flex;
+  align-items: baseline;
+  gap: calc(14 * var(--tu));
+  padding: calc(14 * var(--tu)) calc(26 * var(--tu));
+  border-radius: 100px;
+  background: var(--moss);
+  color: var(--stone);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.bubbleLabel {
+  font-size: max(11px, calc(22 * var(--tu)));
+  color: rgb(var(--stone-rgb) / 0.7);
+}
+
+.bubbleValue {
+  font-size: max(13px, calc(26 * var(--tu)));
+  font-weight: 500;
+}
+
+/* ---------- Price cards ---------- */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(40.33 * var(--u));
+  margin-top: calc(164 * var(--u));
+  padding: 0 var(--gutter);
+}
+
+.card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: calc(26 * var(--u));
+  min-height: calc(863.5 * var(--u));
+  padding: calc(48 * var(--u)) calc(52 * var(--u));
+  border-radius: calc(32 * var(--u));
+  background: var(--card);
+  box-shadow: inset 0 0 0 1.5px rgb(var(--moss-rgb) / 0.12);
+  color: var(--moss);
+  overflow: hidden;
+}
+
+/* The moss state is a layer that fades in, so the swap is opacity, not paint */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--moss);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-soft);
+}
+
+.card[data-active='true'] {
+  color: var(--stone);
+}
+
+.card {
+  cursor: pointer;
+  translate: 0 0;
+  transition:
+    color 0.5s var(--ease-soft),
+    translate 0.5s var(--ease-soft),
+    box-shadow 0.5s var(--ease-soft);
+}
+
+.card:hover {
+  translate: 0 -6px;
+  box-shadow:
+    inset 0 0 0 1.5px var(--loam),
+    0 24px 50px -30px rgb(var(--moss-rgb) / 0.45);
+}
+
+.card[data-active='true']:hover {
+  box-shadow: 0 24px 50px -30px rgb(var(--moss-rgb) / 0.6);
+}
+
+.card:has(.cardHit:focus-visible) {
+  outline: 2px solid var(--loam);
+  outline-offset: 4px;
+}
+
+.cardHit {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  cursor: pointer;
+}
+
+.cardHit:focus-visible {
+  outline: none;
+}
+
+.card[data-active='true']::before {
+  opacity: 1;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chip {
+  padding: calc(11 * var(--u)) calc(22 * var(--u));
+  border-radius: 100px;
+  background: var(--chip);
+  color: var(--moss);
+  font-size: max(12px, calc(22 * var(--u)));
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition:
+    background-color 0.5s var(--ease-soft),
+    color 0.5s var(--ease-soft);
+}
+
+.card[data-active='true'] .chip {
+  background: var(--loam);
+  color: var(--stone);
+}
+
+.chipBooked {
+  composes: chip;
+  background: var(--loam);
+  color: var(--stone);
+}
+
+.name {
+  font-family: var(--font-serif);
+  font-size: calc(60 * var(--u));
+  line-height: 1.15;
+}
+
+.price {
+  font-family: var(--font-serif);
+  font-size: calc(150 * var(--u));
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.divider {
+  height: 1.5px;
+  background: currentColor;
+  opacity: 0.18;
+}
+
+.incLabel {
+  font-size: max(11px, calc(20 * var(--u)));
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  opacity: 0.6;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--u));
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: calc(16 * var(--u));
+  font-size: max(14px, calc(28 * var(--u)));
+  line-height: 1.25;
+}
+
+.item > span {
+  opacity: 0.85;
+}
+
+.itemDot {
+  flex: none;
+  width: calc(10 * var(--u));
+  height: calc(10 * var(--u));
+  min-width: 6px;
+  min-height: 6px;
+  border-radius: 50%;
+  background: var(--loam);
+  transition: background-color 0.5s var(--ease-soft);
+}
+
+.card[data-active='true'] .itemDot {
+  background: var(--sage);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.example {
+  display: flex;
+  align-items: center;
+  gap: calc(20 * var(--u));
+}
+
+.examplePill {
+  position: relative;
+  flex: none;
+  width: calc(170 * var(--u));
+  height: calc(76 * var(--u));
+  border-radius: 100px;
+  overflow: hidden;
+  background: var(--sage);
+}
+
+.examplePill img {
+  object-fit: cover;
+}
+
+.exampleName {
+  font-size: max(14px, calc(26 * var(--u)));
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.exampleMeta {
+  margin-top: calc(4 * var(--u));
+  font-size: max(12px, calc(22 * var(--u)));
+  opacity: 0.6;
+}
+
+/* ---------- Closing ---------- */
+
+.closing {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(60 * var(--u));
+  margin-top: calc(130 * var(--u));
+  padding: 0 var(--gutter);
+}
+
+.closingLine {
+  font-family: var(--font-serif);
+  font-size: calc(56 * var(--u));
+  line-height: 1.15;
+}
+
+@media (max-width: 1279px) {
+  .head {
+    grid-template-columns: 1fr;
+    row-gap: calc(40 * var(--u));
+  }
+
+  .headLeft {
+    display: contents;
+  }
+
+  .heading {
+    order: 1;
+  }
+
+  .intro {
+    order: 2;
+    margin-top: 0;
+  }
+
+  .tapeWrap {
+    --tu: calc(var(--vw) / 2562);
+    height: calc(320 * var(--tu) + 40px);
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: calc(30 * var(--u));
+  }
+
+  .card {
+    min-height: 0;
+  }
+
+  .spacer {
+    min-height: calc(30 * var(--u));
+  }
+
+  .closing {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 767px) {
+  .costs {
+    padding-top: calc(120 * var(--u));
+  }
+
+  .heading {
+    font-size: calc(96 * var(--u));
+  }
+
+  .tapeWrap {
+    --tu: calc((var(--vw) - 2 * var(--gutter)) / 2420);
+    --ox: calc(var(--gutter) - 91 * var(--tu));
+    height: calc(320 * var(--tu) + 64px);
+  }
+
+  .bubble {
+    top: calc(254 * var(--tu) + 10px);
+  }
+
+  /* Too tight for three band names: only the band you're in is named */
+  .bracketLabel {
+    font-size: 14px;
+    top: calc(25 * var(--tu) - 14px);
+    transition:
+      color 0.5s var(--ease-soft),
+      opacity 0.5s var(--ease-soft);
+  }
+
+  .bracketLabel:not([data-band-on='true']) {
+    opacity: 0;
+  }
+
+  .hint {
+    top: calc(264 * var(--tu) + 52px);
+  }
+
+  .price {
+    font-size: calc(130 * var(--u));
+  }
+
+  .closingLine {
+    font-size: calc(60 * var(--u));
+  }
+}

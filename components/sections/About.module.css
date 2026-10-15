@@ -1,0 +1,217 @@
+/* About (Figma 33:2). The statement is set in Neue Montreal per the brief. */
+.about {
+  position: relative;
+  min-height: max(100svh, calc(1378 * var(--u)));
+  display: flex;
+  flex-direction: column;
+  background: var(--stone);
+  color: var(--moss);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(110 * var(--u)) var(--gutter) 0;
+}
+
+.learn {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(14 * var(--u));
+  font-size: max(14px, calc(26 * var(--u)));
+  line-height: 1.2;
+  color: var(--moss);
+  transition: color 0.45s var(--ease-soft);
+}
+
+.learn:hover,
+.learn:focus-visible {
+  color: var(--loam);
+}
+
+.learnArrow {
+  width: calc(19 * var(--u));
+  height: calc(22 * var(--u));
+  min-width: 11px;
+  min-height: 13px;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: calc(60 * var(--u)) var(--gutter) calc(150 * var(--u));
+  gap: calc(110 * var(--u));
+}
+
+.statement {
+  max-width: calc(2080 * var(--u));
+  font-size: calc(82 * var(--u));
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.word {
+  display: inline-block;
+  will-change: auto;
+}
+
+.loamFinal {
+  color: var(--loam);
+}
+
+.media {
+  display: inline-block;
+  vertical-align: middle;
+  margin: calc(-12 * var(--u)) 0.08em 0;
+}
+
+.pill {
+  position: relative;
+  width: calc(205.583 * var(--u));
+  height: calc(86.561 * var(--u));
+  border-radius: 100px;
+  overflow: hidden;
+  background: var(--sage);
+}
+
+.pill img {
+  object-fit: cover;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(15.148 * var(--u));
+  padding: calc(10.82 * var(--u)) calc(30.296 * var(--u)) calc(10.82 * var(--u)) calc(10.82 * var(--u));
+  border-radius: 100px;
+  background: var(--sage);
+  color: var(--moss);
+  font-size: calc(43.281 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.badgeIcon {
+  display: grid;
+  place-items: center;
+  width: calc(62.757 * var(--u));
+  height: calc(62.757 * var(--u));
+  border-radius: 50%;
+  background: var(--moss);
+  color: var(--stone);
+}
+
+.badgeIcon svg {
+  width: 44%;
+  height: 50%;
+}
+
+.badgeNum {
+  min-width: 2.1em;
+}
+
+.avatar {
+  position: relative;
+  width: calc(95.217 * var(--u));
+  height: calc(95.217 * var(--u));
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* ---------- Divider ---------- */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: calc(24 * var(--u));
+}
+
+.line {
+  width: calc(340 * var(--u));
+  height: 2px;
+  background: rgb(var(--loam-rgb) / 0.45);
+}
+
+.lineL {
+  transform-origin: 100% 50%;
+}
+
+.lineR {
+  transform-origin: 0% 50%;
+}
+
+.dot {
+  width: calc(14 * var(--u));
+  height: calc(14 * var(--u));
+  min-width: 7px;
+  min-height: 7px;
+  border-radius: 50%;
+  background: var(--loam);
+}
+
+.emblem {
+  display: grid;
+  place-items: center;
+  width: calc(140 * var(--u));
+  height: calc(140 * var(--u));
+  border-radius: 50%;
+  border: 1.5px solid rgb(var(--moss-rgb) / 0.3);
+}
+
+.emblemInner {
+  display: grid;
+  place-items: center;
+  width: calc(108 * var(--u));
+  height: calc(108 * var(--u));
+  border-radius: 50%;
+  border: 1.5px solid rgb(var(--moss-rgb) / 0.18);
+  background: var(--card);
+  font-family: var(--font-serif);
+  font-size: calc(50 * var(--u));
+  line-height: 1;
+  padding-top: 0.08em;
+}
+
+.rule {
+  height: 1.5px;
+  margin: 0 var(--gutter);
+  background: rgb(var(--moss-rgb) / 0.18);
+}
+
+@media (max-width: 1279px) {
+  .statement {
+    font-size: calc(78 * var(--u));
+  }
+}
+
+@media (max-width: 767px) {
+  .about {
+    min-height: 0;
+  }
+
+  .top {
+    padding-top: calc(120 * var(--u));
+  }
+
+  .body {
+    padding: calc(90 * var(--u)) var(--gutter) calc(120 * var(--u));
+    gap: calc(90 * var(--u));
+  }
+
+  .statement {
+    font-size: calc(62 * var(--u));
+    text-align: left;
+    letter-spacing: -0.025em;
+  }
+
+  .line {
+    width: calc(180 * var(--u));
+  }
+}

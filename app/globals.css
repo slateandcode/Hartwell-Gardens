@@ -1,0 +1,266 @@
+/*
+  Hartwell Gardens: tokens, reset and shared primitives.
+
+  Layout unit: the Figma frames are drawn 2562px wide. `--u` is one Figma px,
+  so a value read straight off the design is written as `calc(112 * var(--u))`.
+  Desktop scales fluidly between 1280 and 1920; tablet and mobile get their own
+  reference widths so type stays readable.
+*/
+
+:root {
+  --stone: #eee8dc;
+  --moss: #2e3a28;
+  --loam: #7b5236;
+  --sage: #b8bd9f;
+  --chip: #e2dbcb;
+  --card: #f6f2ea;
+  --sand: #d9d1c0;
+
+  --moss-rgb: 46 58 40;
+  --stone-rgb: 238 232 220;
+  --loam-rgb: 123 82 54;
+
+  /* Same curves as the CustomEase set in lib/gsap.ts, for CSS hovers */
+  --ease-inout: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --vw: 100vw;
+  --u: calc(clamp(1280px, var(--vw), 1920px) / 2562);
+  --frame: calc(2562 * var(--u));
+  --gutter: calc(91 * var(--u));
+
+  --font-serif: var(--font-gambarino), 'Gambarino', Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-montreal), 'Neue Montreal', 'Helvetica Neue', Arial, sans-serif;
+}
+
+@media (max-width: 1279px) {
+  :root {
+    --u: calc(var(--vw) / 1640);
+    --gutter: calc(64 * var(--u));
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --u: calc(var(--vw) / 860);
+    --gutter: calc(44 * var(--u));
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Keep the scrollbar slot constant so the vw-based unit never jumps */
+  overflow-y: scroll;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+body {
+  margin: 0;
+  background: var(--stone);
+  color: var(--moss);
+  font-family: var(--font-sans);
+  font-size: calc(26 * var(--u));
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 400;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--loam);
+  color: var(--stone);
+}
+
+/* Keyboard focus: always visible, always loam */
+:focus-visible {
+  outline: 2px solid var(--loam);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.on-dark :focus-visible {
+  outline-color: var(--sage);
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 100;
+  padding: 12px 20px;
+  border-radius: 100px;
+  background: var(--stone);
+  color: var(--moss);
+  font-size: 15px;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+}
+
+/* SplitText line masks: lines sit inside a clipped wrapper and rise into view */
+.split-line-mask,
+.split-word-mask {
+  /* SplitText clones the line as its mask; give descenders room inside it */
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+/*
+  Pre-hydration states. The inline script in layout.tsx adds `js` (and
+  `intro-pending` on a first visit) before first paint, so animated elements
+  never flash in their final state. The failsafe reveals everything if
+  scripts never run the reveal.
+*/
+@keyframes hw-failsafe {
+  to {
+    visibility: visible;
+  }
+}
+
+.js [data-reveal] {
+  visibility: hidden;
+  animation: hw-failsafe 0s 5s forwards;
+}
+
+.intro-pending [data-intro-hide] {
+  visibility: hidden;
+  animation: hw-failsafe 0s 7s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Diagonal arrow swap, shared by "Learn more", the big service card and CTAs */
+.arrow-swap {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  flex: none;
+}
+
+.arrow-swap__a,
+.arrow-swap__b {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s var(--ease-soft);
+}
+
+.arrow-swap__b {
+  transform: translate(-110%, 110%);
+}
+
+:is(a, button):hover .arrow-swap__a,
+:is(a, button):focus-visible .arrow-swap__a {
+  transform: translate(110%, -110%);
+}
+
+:is(a, button):hover .arrow-swap__b,
+:is(a, button):focus-visible .arrow-swap__b {
+  transform: none;
+}
+
+/* Feathered left-to-right wipe while a script word writes itself (lib/motion scriptWrite) */
+.script-writing {
+  --wipe: -14%;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--wipe) - 14%), transparent var(--wipe));
+  mask-image: linear-gradient(90deg, #000 calc(var(--wipe) - 14%), transparent var(--wipe));
+}

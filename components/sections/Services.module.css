@@ -1,0 +1,428 @@
+/* Services (Figma 33:45) */
+.services {
+  position: relative;
+  padding: calc(116 * var(--u)) 0 calc(171 * var(--u));
+  background: var(--stone);
+  color: var(--moss);
+  overflow: clip;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: calc(1100 * var(--u)) 1fr;
+  column-gap: calc(40 * var(--u));
+  align-items: start;
+  padding: 0 var(--gutter);
+}
+
+.tagCell {
+  padding-top: calc(14 * var(--u));
+}
+
+.heading {
+  font-family: var(--font-serif);
+  font-size: calc(108 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: calc(1100 * var(--u)) 1fr;
+  column-gap: calc(40 * var(--u));
+  margin-top: calc(110 * var(--u));
+  padding-left: var(--gutter);
+}
+
+/* ---------- Big card ---------- */
+
+.big {
+  position: relative;
+  display: block;
+  height: calc(840 * var(--u));
+  border-radius: calc(32 * var(--u));
+  overflow: hidden;
+  background: var(--sage);
+  color: var(--stone);
+  isolation: isolate;
+}
+
+.bigMedia {
+  position: absolute;
+  inset: 0;
+}
+
+.bigMedia img {
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-soft);
+}
+
+.big:hover .bigMedia img,
+.big:focus-visible .bigMedia img {
+  transform: scale(1.05);
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(var(--moss-rgb) / 0) 40%, rgb(var(--moss-rgb) / 0.78) 100%);
+}
+
+.bigTags {
+  position: absolute;
+  left: calc(36 * var(--u));
+  top: calc(36 * var(--u));
+  display: flex;
+  gap: calc(12 * var(--u));
+}
+
+.bigTag {
+  padding: calc(13 * var(--u)) calc(26 * var(--u));
+  border-radius: 100px;
+  background: rgb(var(--moss-rgb) / 0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-size: max(12px, calc(24 * var(--u)));
+  line-height: 1.2;
+}
+
+.bigTitle {
+  position: absolute;
+  left: calc(48 * var(--u));
+  bottom: calc(48 * var(--u));
+  font-family: var(--font-serif);
+  font-size: calc(124 * var(--u));
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  transition: transform 0.5s var(--ease-soft);
+}
+
+.big:hover .bigTitle,
+.big:focus-visible .bigTitle {
+  transform: translateY(-6px);
+}
+
+.bigArrow {
+  position: absolute;
+  right: calc(48 * var(--u));
+  bottom: calc(48 * var(--u));
+  display: grid;
+  place-items: center;
+  width: calc(116 * var(--u));
+  height: calc(116 * var(--u));
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 50%;
+  background: var(--stone);
+  color: var(--moss);
+  transition:
+    background-color 0.5s var(--ease-soft),
+    color 0.5s var(--ease-soft);
+}
+
+.bigArrowGlyph {
+  width: 31%;
+  height: 36%;
+}
+
+.big:hover .bigArrow,
+.big:focus-visible .bigArrow {
+  background: var(--loam);
+  color: var(--stone);
+}
+
+/* ---------- Carousel ---------- */
+
+.cardLink {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: inherit;
+  -webkit-user-drag: none;
+}
+
+.cardLink:focus-visible {
+  outline-offset: -4px;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.viewport {
+  position: relative;
+  overflow: hidden;
+  margin-right: 0;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.viewport:active {
+  cursor: grabbing;
+}
+
+.track {
+  display: flex;
+  gap: calc(40 * var(--u));
+  width: max-content;
+  padding-right: var(--gutter);
+}
+
+.card {
+  position: relative;
+  flex: none;
+  display: block;
+  width: calc(560 * var(--u));
+  height: calc(440 * var(--u));
+  border-radius: calc(28 * var(--u));
+  overflow: hidden;
+  isolation: isolate;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.card img {
+  object-fit: cover;
+  pointer-events: none;
+  transition: transform 0.6s var(--ease-soft);
+}
+
+.card:hover img,
+.card:has(:focus-visible) img {
+  transform: scale(1.05);
+}
+
+.light {
+  background: var(--card);
+  box-shadow: inset 0 0 0 1.5px rgb(var(--moss-rgb) / 0.12);
+  color: var(--moss);
+}
+
+.lightMedia {
+  position: absolute;
+  right: calc(29.5 * var(--u));
+  top: calc(26.5 * var(--u));
+  width: calc(230 * var(--u));
+  height: calc(210 * var(--u));
+  border-radius: calc(20 * var(--u));
+  overflow: hidden;
+}
+
+.photo {
+  background: var(--sage);
+  color: var(--stone);
+}
+
+.photoMedia {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.photo .shade {
+  z-index: 0;
+}
+
+.plus {
+  position: absolute;
+  left: calc(28 * var(--u));
+  top: calc(28 * var(--u));
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: calc(68 * var(--u));
+  height: calc(68 * var(--u));
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 50%;
+  transition:
+    transform 0.5s var(--ease-soft),
+    background-color 0.5s var(--ease-soft),
+    color 0.5s var(--ease-soft),
+    border-color 0.5s var(--ease-soft);
+}
+
+.plus svg {
+  width: 36%;
+  height: 36%;
+}
+
+.light .plus {
+  border: 1.5px solid rgb(var(--moss-rgb) / 0.5);
+  color: var(--moss);
+}
+
+.photo .plus {
+  border: 1.5px solid rgb(var(--stone-rgb) / 0.5);
+  background: rgb(var(--moss-rgb) / 0.45);
+  color: var(--stone);
+}
+
+.card:hover .plus,
+.card:has(:focus-visible) .plus {
+  transform: rotate(90deg);
+}
+
+.light:hover .plus,
+.light:has(:focus-visible) .plus {
+  background: var(--moss);
+  border-color: var(--moss);
+  color: var(--stone);
+}
+
+.photo:hover .plus,
+.photo:has(:focus-visible) .plus {
+  background: var(--loam);
+  border-color: var(--loam);
+}
+
+.cardTitle {
+  position: absolute;
+  left: calc(32 * var(--u));
+  bottom: calc(32 * var(--u));
+  z-index: 1;
+  font-family: var(--font-serif);
+  font-size: calc(64 * var(--u));
+  line-height: 1;
+  white-space: nowrap;
+  transition: transform 0.5s var(--ease-soft);
+}
+
+.card:hover .cardTitle,
+.card:has(:focus-visible) .cardTitle {
+  transform: translateY(-6px);
+}
+
+.nav {
+  display: flex;
+  gap: calc(16 * var(--u));
+  margin-top: calc(56 * var(--u));
+}
+
+.navBtn {
+  display: grid;
+  place-items: center;
+  width: calc(92 * var(--u));
+  height: calc(92 * var(--u));
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  font-size: max(16px, calc(32 * var(--u)));
+  font-weight: 500;
+  line-height: 1;
+  transition:
+    background-color 0.5s var(--ease-soft),
+    color 0.5s var(--ease-soft),
+    border-color 0.5s var(--ease-soft),
+    opacity 0.5s var(--ease-soft);
+}
+
+.navBtn span {
+  display: block;
+  transition: transform 0.5s var(--ease-soft);
+}
+
+.prev {
+  border: 1.5px solid rgb(var(--moss-rgb) / 0.35);
+  color: var(--moss);
+}
+
+.next {
+  background: var(--moss);
+  color: var(--stone);
+}
+
+.prev:hover:not([aria-disabled='true']),
+.prev:focus-visible {
+  background: var(--moss);
+  border-color: var(--moss);
+  color: var(--stone);
+}
+
+.prev:hover:not([aria-disabled='true']) span {
+  transform: translateX(-3px);
+}
+
+.next:hover:not([aria-disabled='true']),
+.next:focus-visible {
+  background: var(--loam);
+}
+
+.next:hover:not([aria-disabled='true']) span {
+  transform: translateX(3px);
+}
+
+.navBtn[aria-disabled='true'] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.caption {
+  align-self: flex-end;
+  width: calc(520 * var(--u));
+  margin: auto var(--gutter) 0 0;
+  font-size: max(14px, calc(24 * var(--u)));
+  line-height: 1.5;
+  color: rgb(var(--moss-rgb) / 0.65);
+}
+
+/* ---------- Tablet and mobile: big card on top, swipe carousel below ---------- */
+
+@media (max-width: 1279px) {
+  .head,
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .head {
+    row-gap: calc(40 * var(--u));
+  }
+
+  .main {
+    row-gap: calc(56 * var(--u));
+    margin-top: calc(80 * var(--u));
+  }
+
+  .big {
+    height: calc(780 * var(--u));
+    margin-right: var(--gutter);
+  }
+
+  .caption {
+    width: auto;
+    max-width: 420px;
+    margin-top: calc(48 * var(--u));
+  }
+}
+
+@media (max-width: 767px) {
+  .services {
+    padding: calc(120 * var(--u)) 0 calc(140 * var(--u));
+  }
+
+  .heading {
+    font-size: calc(96 * var(--u));
+  }
+
+  .big {
+    height: calc(900 * var(--u));
+  }
+
+  .bigTitle {
+    font-size: calc(110 * var(--u));
+  }
+
+  .card {
+    width: calc(600 * var(--u));
+    height: calc(480 * var(--u));
+  }
+
+  .caption {
+    align-self: flex-start;
+    margin-left: 0;
+    padding-right: var(--gutter);
+  }
+}

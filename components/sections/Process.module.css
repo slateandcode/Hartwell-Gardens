@@ -1,0 +1,320 @@
+/*
+  How it works (Figma 37:2, 2562 x 3219). Desktop keeps the Figma coordinates
+  so the path passes exactly through the nodes; tablet and mobile reflow and
+  the path is rebuilt from the measured node positions.
+*/
+.process {
+  /* Section unit: the Figma frame scaled to the viewport on tablet too */
+  --pu: var(--u);
+  --node: calc(132 * var(--pu));
+  position: relative;
+  height: calc(3219 * var(--pu));
+  background: var(--stone);
+  color: var(--moss);
+  overflow: clip;
+}
+
+.uProbe {
+  position: absolute;
+  width: calc(1000 * var(--pu));
+  height: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.head {
+  position: absolute;
+  left: calc(40 * var(--pu));
+  top: calc(50 * var(--pu));
+  z-index: 2;
+}
+
+.heading {
+  margin-top: calc(28 * var(--pu));
+  font-family: var(--font-serif);
+  font-size: calc(112 * var(--pu));
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+}
+
+/* ---------- Path ---------- */
+
+.paths {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(2562 * var(--pu));
+  height: calc(3219 * var(--pu));
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.toCome,
+.done {
+  fill: none;
+  stroke-width: 58;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.toCome {
+  stroke: rgb(var(--moss-rgb) / 0.1);
+}
+
+.done {
+  stroke: var(--loam);
+}
+
+.rider {
+  pointer-events: none;
+}
+
+/* ---------- Tape measures ---------- */
+
+.tape {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tapeTR {
+  left: calc(2233.88 * var(--pu));
+  top: calc(32.13 * var(--pu));
+  width: calc(489.586 * var(--pu));
+  height: calc(560.885 * var(--pu));
+}
+
+.tapeBL {
+  left: calc(-164.89 * var(--pu));
+  top: calc(2347.12 * var(--pu));
+  width: calc(517.081 * var(--pu));
+  height: calc(675.533 * var(--pu));
+}
+
+.tapeBand {
+  fill: none;
+  stroke: var(--sage);
+  stroke-width: 66;
+  stroke-linejoin: round;
+}
+
+.tapeTicks {
+  fill: none;
+  stroke: rgb(var(--moss-rgb) / 0.4);
+  stroke-width: 26;
+  stroke-dasharray: 2 16;
+}
+
+.tapeMajor {
+  fill: none;
+  stroke: rgb(var(--moss-rgb) / 0.55);
+  stroke-width: 34;
+  stroke-dasharray: 3 86;
+}
+
+.tapeText {
+  font-family: var(--font-sans);
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  fill: rgb(var(--moss-rgb) / 0.7);
+  text-transform: uppercase;
+}
+
+/* ---------- Steps ---------- */
+
+.steps {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.step {
+  display: contents;
+}
+
+.node {
+  position: absolute;
+  left: calc(var(--nx) * var(--pu) - var(--node) / 2);
+  top: calc(var(--ny) * var(--pu) - var(--node) / 2);
+  width: var(--node);
+  height: var(--node);
+  border-radius: 50%;
+  border: calc(8 * var(--pu)) solid var(--stone);
+  background: var(--sand);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.nodeFill {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--moss);
+  opacity: 0;
+}
+
+.nodeNum {
+  position: relative;
+  font-size: max(14px, calc(34 * var(--pu)));
+  font-weight: 500;
+  line-height: 1;
+  color: rgb(var(--moss-rgb) / 0.55);
+}
+
+.text {
+  position: absolute;
+  top: calc(var(--ty) * var(--pu));
+  display: flex;
+  flex-direction: column;
+  gap: calc(18 * var(--pu));
+  width: calc(600 * var(--pu));
+}
+
+.left .text {
+  right: calc(1772 * var(--pu));
+  align-items: flex-end;
+  text-align: right;
+}
+
+.right .text {
+  left: calc(1760 * var(--pu));
+  align-items: flex-start;
+}
+
+.chip {
+  display: inline-block;
+  padding: calc(11 * var(--pu)) calc(22 * var(--pu));
+  border-radius: 100px;
+  background: var(--chip);
+  color: var(--moss);
+  font-size: max(12px, calc(22 * var(--pu)));
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: calc(92 * var(--pu));
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.icon {
+  display: inline-block;
+  width: 0.96em;
+  height: 0.96em;
+  margin: 0 0.04em 0 0;
+  vertical-align: -0.14em;
+}
+
+.body {
+  font-size: max(15px, calc(30 * var(--pu)));
+  line-height: 1.5;
+  color: rgb(var(--moss-rgb) / 0.75);
+}
+
+.cta {
+  margin-top: calc(35 * var(--pu));
+}
+
+/* ---------- Tablet: the desktop geometry, scaled to fit ---------- */
+
+@media (max-width: 1279px) {
+  .process {
+    --pu: calc(var(--vw) / 2562);
+  }
+
+  .text {
+    width: calc(680 * var(--pu));
+  }
+
+  .title {
+    font-size: max(28px, calc(92 * var(--pu)));
+  }
+}
+
+/* ---------- Mobile: a wiggle down the left, steps on the right ---------- */
+
+@media (max-width: 767px) {
+  .process {
+    --pu: var(--u);
+    --node: calc(96 * var(--u));
+    height: auto;
+    padding: calc(120 * var(--u)) 0 calc(300 * var(--u));
+  }
+
+  .head {
+    position: relative;
+    left: auto;
+    top: auto;
+    padding: 0 var(--gutter);
+  }
+
+  .paths {
+    width: 100%;
+    height: 100%;
+  }
+
+  .steps {
+    position: relative;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    gap: calc(130 * var(--u));
+    margin-top: calc(300 * var(--u));
+    padding: 0 var(--gutter);
+  }
+
+  .step {
+    display: grid;
+    align-items: start;
+    grid-template-columns: var(--node) 1fr;
+    column-gap: calc(44 * var(--u));
+    padding-left: calc(30 * var(--u));
+  }
+
+  .node {
+    position: relative;
+    left: auto;
+    top: auto;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .text,
+  .left .text,
+  .right .text {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: auto;
+    grid-column: 2;
+    grid-row: 1;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .title {
+    font-size: calc(76 * var(--u));
+    white-space: normal;
+  }
+
+  .tapeTR {
+    left: auto;
+    width: calc(360 * var(--u));
+    height: calc(412 * var(--u));
+    right: calc(-190 * var(--u));
+    top: calc(-120 * var(--u));
+  }
+
+  .tapeBL {
+    display: none;
+  }
+}

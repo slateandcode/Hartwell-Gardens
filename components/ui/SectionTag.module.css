@@ -1,0 +1,55 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(12 * var(--u));
+}
+
+.num {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: calc(64 * var(--u));
+  height: calc(64 * var(--u));
+  min-width: 34px;
+  min-height: 34px;
+  border-radius: 50%;
+  font-size: max(12px, calc(22 * var(--u)));
+  font-weight: 500;
+  line-height: 1;
+}
+
+.label {
+  display: inline-block;
+  padding: calc(16 * var(--u)) calc(28 * var(--u));
+  border-radius: 100px;
+  font-size: max(13px, calc(24 * var(--u)));
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.light .num {
+  background: var(--moss);
+  color: var(--stone);
+}
+
+.light .label {
+  background: var(--chip);
+  color: var(--moss);
+}
+
+.dark .num {
+  background: var(--stone);
+  color: var(--moss);
+}
+
+.dark .label {
+  background: rgb(var(--stone-rgb) / 0.12);
+  color: var(--stone);
+}
+
+@media (max-width: 767px) {
+  .label {
+    padding: 8px 14px;
+  }
+}

@@ -1,0 +1,135 @@
+/*
+  Pill CTA: label + round loam badge with the diagonal arrow. On hover a circle
+  grows out of the badge and floods the pill.
+*/
+.pill {
+  --badge: calc(81.118 * var(--u));
+  --inset: calc(4.18 * var(--u));
+  --cx: calc(100% - var(--inset) - var(--badge) / 2);
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  height: calc(89.481 * var(--u));
+  min-height: 44px;
+  padding: 0 calc(var(--badge) + var(--inset) + 30 * var(--u)) 0 calc(48 * var(--u));
+  border-radius: 999px;
+  overflow: hidden;
+  font-family: var(--font-serif);
+  font-size: calc(var(--label, 40) * var(--u));
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.5s var(--ease-soft);
+}
+
+.light {
+  background: var(--moss);
+  color: var(--stone);
+}
+
+.dark {
+  background: var(--stone);
+  color: var(--moss);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: circle(calc(var(--badge) / 2) at var(--cx) 50%);
+  transition: clip-path 0.55s var(--ease-soft);
+}
+
+.light .fill {
+  background: var(--loam);
+}
+
+.dark .fill {
+  background: var(--moss);
+}
+
+/* Keeps the pill's edge readable once it has flooded moss-on-moss */
+.dark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1.5px rgb(var(--stone-rgb) / 0.55);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-soft);
+  pointer-events: none;
+}
+
+.label {
+  position: relative;
+  padding-bottom: 0.06em;
+}
+
+.badge {
+  position: absolute;
+  right: var(--inset);
+  top: 50%;
+  width: var(--badge);
+  height: var(--badge);
+  margin-top: calc(var(--badge) / -2);
+  border-radius: 50%;
+  background: var(--loam);
+  color: var(--stone);
+  display: grid;
+  place-items: center;
+}
+
+.arrow {
+  width: calc(var(--badge) * 0.485);
+  height: calc(var(--badge) * 0.56);
+  transition: transform 0.5s var(--ease-soft);
+}
+
+.pill:hover .fill,
+.pill:focus-visible .fill {
+  clip-path: circle(150% at var(--cx) 50%);
+}
+
+.pill:hover .arrow,
+.pill:focus-visible .arrow {
+  transform: rotate(45deg);
+}
+
+.dark:hover,
+.dark:focus-visible {
+  color: var(--stone);
+}
+
+.dark:hover::after,
+.dark:focus-visible::after {
+  opacity: 1;
+}
+
+.pill:disabled,
+.pill[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+.pill[aria-disabled='true'] .label {
+  opacity: 0.55;
+}
+
+.pill[aria-disabled='true']:hover .fill {
+  clip-path: circle(calc(var(--badge) / 2) at var(--cx) 50%);
+}
+
+.pill[aria-disabled='true']:hover .arrow {
+  transform: none;
+}
+
+@media (max-width: 767px) {
+  .pill {
+    --badge: 44px;
+    --inset: 4px;
+    height: 52px;
+    padding-left: 22px;
+    padding-right: calc(var(--badge) + 22px);
+    font-size: 19px;
+  }
+}
