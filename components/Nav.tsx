@@ -33,15 +33,29 @@ export default function Nav() {
         hidden = h
         gsap.to(shell, { yPercent: h ? -110 : 0, duration: 0.5, ease: EASE.inOut, overwrite: 'auto' })
       }
+      // Out of the way while you read down the page; back only when you mean it.
+      // Each change of direction starts a new run, and the nav reacts to how far
+      // that run has gone: a few px down hides it, a deliberate ~50px up brings it
+      // back, so the little drift at the end of a wheel or trackpad flick doesn't.
+      let runStart = 0
+      let runDir = 0
       ScrollTrigger.create({
         start: 0,
         end: 'max',
         onUpdate: (self) => {
           if (openRef.current) return
           const y = self.scroll()
-          if (y < 140) setHidden(false)
-          else if (self.direction === 1 && Math.abs(self.getVelocity()) > 20) setHidden(true)
-          else if (self.direction === -1) setHidden(false)
+          if (y < 120) {
+            setHidden(false)
+            return
+          }
+          if (self.direction !== runDir) {
+            runDir = self.direction
+            runStart = y
+          }
+          const run = Math.abs(y - runStart)
+          if (runDir === 1 && run > 6) setHidden(true)
+          else if (runDir === -1 && run > 50) setHidden(false)
         },
       })
       const hero = document.getElementById('top')
